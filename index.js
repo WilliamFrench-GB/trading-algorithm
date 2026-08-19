@@ -83,7 +83,7 @@ const calculateAverageClose = (candles) => {
     }
 
     return total / candles.length;
-};      
+};
 
 // Detect if price is bullish or bearish
 const detectTrend = (candles) => {
@@ -99,9 +99,7 @@ const detectTrend = (candles) => {
     };
 };
 
-console.log(calculateAverageClose(candles));
-
-console.log(detectTrend(candles))
+// generate signals based on moving average
 
 const generateSignals = (candles, period) => {
     const signals = [];
@@ -114,21 +112,16 @@ const generateSignals = (candles, period) => {
             signals.push({ bar: i, signal: "BUY", currentPrice, average });
         } else if (currentPrice < average) {
             signals.push({ bar: i, signal: "SELL", currentPrice, average });
-        } else{
+        } else {
             signals.push({ bar: i, signal: "HOLD", currentPrice, average });
         }
-    } 
-        return signals;
-}; 
+    }
+    return signals;
+};
 
 const signals10 = generateSignals(candles, 10);
-console.log("Period 10:", signals10.length, signals10);
-
 const signals3 = generateSignals(candles, 3);
-console.log("Period 3:", signals3.length, signals3);
-
 const signals5 = generateSignals(candles, 5);
-console.log("Period 5:", signals5.length, signals5);
 
 // Signal count = candles.length - period. A bigger window needs more history
 // before the first average can be calculated, so more early bars get skipped.
@@ -153,6 +146,26 @@ const countSignals = (signals) => {
     return { BUY: buyCount, SELL: sellCount, HOLD: holdCount };
 };
 
-    console.log("period 10 signal counts:", countSignals(signals10));
-    console.log("period 3 signal counts:", countSignals(signals3));
-    console.log("period 5 signal counts:", countSignals(signals5));
+// Display signal counts for each period.
+
+console.log("period 10 signal counts:", countSignals(signals10));
+console.log("period 5 signal counts:", countSignals(signals5));
+console.log("period 3 signal counts:", countSignals(signals3));
+
+const CalculateBuyRatio = (signals) => {
+    const counts = countSignals(signals);
+    const totalSignals = counts.BUY + counts.SELL;
+
+    if (totalSignals === 0) {
+        return 0;
+    }
+    return (counts.BUY / totalSignals) * 100;
+};
+console.log("period 10 Buy Ratio:", CalculateBuyRatio(signals10));
+console.log("period 5 Buy Ratio:", CalculateBuyRatio(signals5));
+console.log("period 3 Buy Ratio:", CalculateBuyRatio(signals3));
+
+// Returns the percentage of directional signals that were BUY (HOLD excluded).
+// Does not measure profitability — that needs entry vs later exit prices.
+
+
