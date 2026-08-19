@@ -132,6 +132,8 @@ const countSignals = (signals) => {
     let buyCount = 0;
     let sellCount = 0;
     let holdCount = 0;
+    // .filter() returns a new array — the original is never modified.
+    // This is called immutability: safe to filter the same data repeatedly.
 
     const buyCount = signals.filter(s => s.signal === "BUY").length;
     const sellCount = signals.filter(s => s.signal === "SELL").length;
