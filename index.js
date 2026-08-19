@@ -130,6 +130,29 @@ console.log("Period 3:", signals3.length, signals3);
 const signals5 = generateSignals(candles, 5);
 console.log("Period 5:", signals5.length, signals5);
 
-// Why the smaller period produces more signals than the larger period: Shorter duration of market availabillity captures immidiate order flow and current 
-// volatility rather than just smoothening the results out due to a longer period of market data. The smaller period is more sensitive to price changes and can generate
-// more frequent signals.
+// Signal count = candles.length - period. A bigger window needs more history
+// before the first average can be calculated, so more early bars get skipped.
+// Separately: shorter periods are more sensitive to price, so the signals they
+// do produce flip direction more often.
+
+const countSignals = (signals) => {
+    let buyCount = 0;
+    let sellCount = 0;
+    let holdCount = 0;
+
+    for (let i = 0; i < signals.length; i++) {
+        if (signals[i].signal === "BUY") {
+            buyCount++;
+        } else if (signals[i].signal === "SELL") {
+            sellCount++;
+        } else {
+            holdCount++;
+        }
+    }
+
+    return { BUY: buyCount, SELL: sellCount, HOLD: holdCount };
+};
+
+    console.log("period 10 signal counts:", countSignals(signals10));
+    console.log("period 3 signal counts:", countSignals(signals3));
+    console.log("period 5 signal counts:", countSignals(signals5));
