@@ -9,8 +9,9 @@ from OHLC candle data using a simple moving average crossover.
 - `generateSignals(candles, period)` — signals for a configurable lookback window
 
 ## Running it
+```bash
 node index.js
-
+```
 ## Status
 Work in progress — currently uses hardcoded candle data.
 Next: live market data, signal counting, P&L backtesting.
