@@ -96,7 +96,7 @@ const detectTrend = (candles) => {
         return "Bullish";
     } else {
         return "Bearish";
-    };
+    }
 };
 
 // generate signals based on moving average
@@ -148,11 +148,16 @@ const countSignals = (signals) => {
 
 // Display signal counts for each period.
 
+console.log("Overall trend:", detectTrend(candles));
+
 console.log("period 10 signal counts:", countSignals(signals10));
 console.log("period 5 signal counts:", countSignals(signals5));
 console.log("period 3 signal counts:", countSignals(signals3));
 
-const CalculateBuyRatio = (signals) => {
+// Returns the percentage of directional signals that were BUY (HOLD excluded).
+// Does not measure profitability — that needs entry vs later exit prices.
+
+const calculateBuyRatio = (signals) => {
     const counts = countSignals(signals);
     const totalSignals = counts.BUY + counts.SELL;
 
@@ -161,11 +166,10 @@ const CalculateBuyRatio = (signals) => {
     }
     return (counts.BUY / totalSignals) * 100;
 };
-console.log("period 10 Buy Ratio:", CalculateBuyRatio(signals10));
-console.log("period 5 Buy Ratio:", CalculateBuyRatio(signals5));
-console.log("period 3 Buy Ratio:", CalculateBuyRatio(signals3));
+console.log("period 10 Buy Ratio:", calculateBuyRatio(signals10));
+console.log("period 5 Buy Ratio:", calculateBuyRatio(signals5));
+console.log("period 3 Buy Ratio:", calculateBuyRatio(signals3));
 
-// Returns the percentage of directional signals that were BUY (HOLD excluded).
-// Does not measure profitability — that needs entry vs later exit prices.
+
 
 
