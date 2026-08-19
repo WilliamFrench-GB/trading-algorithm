@@ -14,6 +14,3 @@ node index.js
 ## Status
 Work in progress — currently uses hardcoded candle data.
 Next: live market data, signal counting, P&L backtesting.
-
-// README.md is a plain text file using Markdown syntax.
-// GitHub auto-renders it as the front page of the repo.
