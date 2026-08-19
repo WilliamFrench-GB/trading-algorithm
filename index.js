@@ -133,15 +133,9 @@ const countSignals = (signals) => {
     let sellCount = 0;
     let holdCount = 0;
 
-    for (let i = 0; i < signals.length; i++) {
-        if (signals[i].signal === "BUY") {
-            buyCount++;
-        } else if (signals[i].signal === "SELL") {
-            sellCount++;
-        } else {
-            holdCount++;
-        }
-    }
+    const buyCount = signals.filter(s => s.signal === "BUY").length;
+    const sellCount = signals.filter(s => s.signal === "SELL").length;
+    const holdCount = signals.filter(s => s.signal === "HOLD").length;
 
     return { BUY: buyCount, SELL: sellCount, HOLD: holdCount };
 };
