@@ -73,7 +73,6 @@ const candles = [
     }
 ];
 
-
 // Calculate average closing price
 const calculateAverageClose = (candles) => {
     let total = 0;
@@ -87,9 +86,7 @@ const calculateAverageClose = (candles) => {
 
 // Detect if price is bullish or bearish
 const detectTrend = (candles) => {
-
     const average = calculateAverageClose(candles);
-
     const latestCandle = candles[candles.length - 1];
 
     if (latestCandle.close > average) {
@@ -100,7 +97,6 @@ const detectTrend = (candles) => {
 };
 
 // generate signals based on moving average
-
 const generateSignals = (candles, period) => {
     const signals = [];
     for (let i = period; i < candles.length; i++) {
@@ -129,12 +125,6 @@ const signals5 = generateSignals(candles, 5);
 // do produce flip direction more often.
 
 const countSignals = (signals) => {
-    let buyCount = 0;
-    let sellCount = 0;
-    let holdCount = 0;
-    // .filter() returns a new array — the original is never modified.
-    // This is called immutability: safe to filter the same data repeatedly.
-
     const buyCount = signals.filter(s => s.signal === "BUY").length;
     const sellCount = signals.filter(s => s.signal === "SELL").length;
     const holdCount = signals.filter(s => s.signal === "HOLD").length;
@@ -162,10 +152,10 @@ const calculateBuyRatio = (signals) => {
     }
     return (counts.BUY / totalSignals) * 100;
 };
+
 console.log("period 10 Buy Ratio:", calculateBuyRatio(signals10));
 console.log("period 5 Buy Ratio:", calculateBuyRatio(signals5));
 console.log("period 3 Buy Ratio:", calculateBuyRatio(signals3));
-
 
 
 
