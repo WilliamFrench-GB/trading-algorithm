@@ -157,5 +157,14 @@ console.log("period 10 Buy Ratio:", calculateBuyRatio(signals10));
 console.log("period 5 Buy Ratio:", calculateBuyRatio(signals5));
 console.log("period 3 Buy Ratio:", calculateBuyRatio(signals3));
 
+const ranges = candles.map((candle) => candle.high - candle.low);
+console.log(ranges);
+
+const sellPrices = signals5.filter(s => s.signal === "SELL").map(s => s.currentPrice)
+console.log(sellPrices);
+
+const buyPrices = signals5.filter(s => s.signal === "BUY").map(s => s.currentPrice)
+console.log(buyPrices);
+
 
 
