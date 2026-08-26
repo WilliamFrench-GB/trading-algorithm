@@ -184,5 +184,16 @@ const checkOutcome = (candles, entryBar, entryPrice, targetPrice) => {
 
 console.log(checkOutcome(candles, 8, 170, 190));
 
+const backtest = (candles, signals, targetPrice) => {
+    const outcomes = signals
+    .filter(s =>  s.signal === "BUY")
+    .map(s => checkOutcome(candles, s.bar, s.currentPrice, targetPrice));
+
+    return outcomes;
+
+};
+
+console.log(backtest(candles, signals5, 190));
+
 
 
