@@ -169,5 +169,20 @@ console.log(buyPrices);
 const enriched = candles.map(c => ({ close: c.close, bullish: c.close > c.open}));
 console.log(enriched);
 
+// Look-ahead bias: letting a backtest use information it couldn't have known
+// at the time of the decision. entryBar + 1 avoids judging a trade using
+// data from the exact candle that generated the signal.
+
+const checkOutcome = (candles, entryBar, entryPrice, targetPrice) => {
+    for (let i = entryBar + 1; i < candles.length; i++) {
+        if (candles[i].high >= targetPrice) {
+            return "WIN";
+        }
+    }
+    return "UNRESOLVED";
+};
+
+console.log(checkOutcome(candles, 8, 170, 190));
+
 
 
