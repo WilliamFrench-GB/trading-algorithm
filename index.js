@@ -166,5 +166,8 @@ console.log(sellPrices);
 const buyPrices = signals5.filter(s => s.signal === "BUY").map(s => s.currentPrice)
 console.log(buyPrices);
 
+const enriched = candles.map(c => ({ close: c.close, bullish: c.close > c.open}));
+console.log(enriched);
+
 
 
