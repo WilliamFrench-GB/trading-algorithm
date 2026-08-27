@@ -84,7 +84,10 @@ const calculateAverageClose = (candles) => {
     return total / candles.length;
 };
 
-// Detect if price is bullish or bearish
+// Compares only the LAST candle's close to the overall average — a single
+// snapshot, not a bar-by-bar trend. A candle can be individually bearish
+// (see 'enriched') while the overall trend still reads Bullish.
+
 const detectTrend = (candles) => {
     const average = calculateAverageClose(candles);
     const latestCandle = candles[candles.length - 1];
@@ -162,10 +165,10 @@ const sellPrices = signals5.filter(s => s.signal === "SELL").map(s => s.currentP
 const buyPrices = signals5.filter(s => s.signal === "BUY").map(s => s.currentPrice)
 const enriched = candles.map(c => ({ close: c.close, bullish: c.close > c.open }));
 
-console.log("Candle ranges", ranges);
-console.log("Sell prices", sellPrices);
-console.log("Buy prices", buyPrices);
-console.log("Enriched candles", enriched);
+console.log("Candle ranges:", ranges);
+console.log("Sell prices:", sellPrices);
+console.log("Buy prices:", buyPrices);
+console.log("Enriched candles:", enriched);
 
 // Look-ahead bias: letting a backtest use information it couldn't have known
 // at the time of the decision. entryBar + 1 avoids judging a trade using
@@ -194,6 +197,23 @@ const backtest = (candles, signals, targetPrice) => {
 
 console.log(backtest(candles, signals5, 190));
 
+const calculateWinRate = (outcomes) => {
+    // "6 were wins" — count how many outcomes equal "WIN"
+    const winCount = outcomes.filter( o => o === "WIN" ).length;
+    // "2 we don't know yet" — count how many outcomes equal "UNRESOLVED"
+    const unresolvedCount = outcomes.filter( o => o === "UNRESOLVED" ).length;
+    // "trades are now counting as 8 total" — total minus the unknowns
+    const totalDecided = outcomes.length - unresolvedCount;
+
+    if (totalDecided === 0) {
+        return 0;
+
+    }
+        // "6 out of 8 is 75%" — wins divided by the real total, as a percentage
+        return (winCount / totalDecided ) *100;
+};
+
+console.log(calculateWinRate(backtest(candles, signals5, 190)));
 
 
 
