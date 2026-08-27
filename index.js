@@ -174,10 +174,16 @@ console.log("Enriched candles:", enriched);
 // at the time of the decision. entryBar + 1 avoids judging a trade using
 // data from the exact candle that generated the signal.
 
-const checkOutcome = (candles, entryBar, entryPrice, targetPrice) => {
+const checkOutcome = (candles, entryBar, entryPrice, winPercent, lossPercent) => {
+    const targetPrice = entryPrice * (1 + winPercent / 100);
+    const stopPrice = entryPrice * (1 - lossPercent / 100);
+
     for (let i = entryBar + 1; i < candles.length; i++) {
         if (candles[i].high >= targetPrice) {
             return "WIN";
+        }
+        if (candles[i].low <= stopPrice) {
+            return "LOSS";
         }
     }
     return "UNRESOLVED";
@@ -186,22 +192,22 @@ const checkOutcome = (candles, entryBar, entryPrice, targetPrice) => {
 // A function returning a "plausible" result on bad input is more dangerous
 // than a crash. Crashes get noticed. Silent wrong answers get shipped.
 
-const backtest = (candles, signals, targetPrice) => {
+const backtest = (candles, signals, winPercent, lossPercent) => {
     const outcomes = signals
         .filter(s => s.signal === "BUY")
-        .map(s => checkOutcome(candles, s.bar, s.currentPrice, targetPrice));
+        .map(s => checkOutcome(candles, s.bar, s.currentPrice, winPercent, lossPercent));
 
     return outcomes;
 
 };
 
-console.log(backtest(candles, signals5, 190));
+console.log(backtest(candles, signals5, 5, 2));
 
 const calculateWinRate = (outcomes) => {
     // "6 were wins" — count how many outcomes equal "WIN"
-    const winCount = outcomes.filter( o => o === "WIN" ).length;
+    const winCount = outcomes.filter(o => o === "WIN").length;
     // "2 we don't know yet" — count how many outcomes equal "UNRESOLVED"
-    const unresolvedCount = outcomes.filter( o => o === "UNRESOLVED" ).length;
+    const unresolvedCount = outcomes.filter(o => o === "UNRESOLVED").length;
     // "trades are now counting as 8 total" — total minus the unknowns
     const totalDecided = outcomes.length - unresolvedCount;
 
@@ -209,11 +215,11 @@ const calculateWinRate = (outcomes) => {
         return 0;
 
     }
-        // "6 out of 8 is 75%" — wins divided by the real total, as a percentage
-        return (winCount / totalDecided ) *100;
+    // "6 out of 8 is 75%" — wins divided by the real total, as a percentage
+    return (winCount / totalDecided) * 100;
 };
 
-console.log(calculateWinRate(backtest(candles, signals5, 190)));
+console.log(calculateWinRate(backtest(candles, signals5, 5, 2)));
 
 
 
