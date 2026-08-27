@@ -158,16 +158,14 @@ console.log("period 5 Buy Ratio:", calculateBuyRatio(signals5));
 console.log("period 3 Buy Ratio:", calculateBuyRatio(signals3));
 
 const ranges = candles.map((candle) => candle.high - candle.low);
-console.log(ranges);
-
 const sellPrices = signals5.filter(s => s.signal === "SELL").map(s => s.currentPrice)
-console.log(sellPrices);
-
 const buyPrices = signals5.filter(s => s.signal === "BUY").map(s => s.currentPrice)
-console.log(buyPrices);
+const enriched = candles.map(c => ({ close: c.close, bullish: c.close > c.open }));
 
-const enriched = candles.map(c => ({ close: c.close, bullish: c.close > c.open}));
-console.log(enriched);
+console.log("Candle ranges", ranges);
+console.log("Sell prices", sellPrices);
+console.log("Buy prices", buyPrices);
+console.log("Enriched candles", enriched);
 
 // Look-ahead bias: letting a backtest use information it couldn't have known
 // at the time of the decision. entryBar + 1 avoids judging a trade using
@@ -182,18 +180,21 @@ const checkOutcome = (candles, entryBar, entryPrice, targetPrice) => {
     return "UNRESOLVED";
 };
 
-console.log(checkOutcome(candles, 8, 170, 190));
+// A function returning a "plausible" result on bad input is more dangerous
+// than a crash. Crashes get noticed. Silent wrong answers get shipped.
 
 const backtest = (candles, signals, targetPrice) => {
     const outcomes = signals
-    .filter(s =>  s.signal === "BUY")
-    .map(s => checkOutcome(candles, s.bar, s.currentPrice, targetPrice));
+        .filter(s => s.signal === "BUY")
+        .map(s => checkOutcome(candles, s.bar, s.currentPrice, targetPrice));
 
     return outcomes;
 
 };
 
 console.log(backtest(candles, signals5, 190));
+
+
 
 
 
