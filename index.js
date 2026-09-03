@@ -1,4 +1,4 @@
-// The 12 candles are a toy dataSet.
+// The 12 candles are a toy dataset.
 // Historical data would be needed to draw real conclusions.
 const candles = [
     {
@@ -141,9 +141,9 @@ const countSignals = (signals) => {
 
 console.log("Overall trend:", detectTrend(candles));
 
-console.log("period 10 signal counts:", countSignals(signals10));
-console.log("period 5 signal counts:", countSignals(signals5));
-console.log("period 3 signal counts:", countSignals(signals3));
+console.log("Period 10 signal counts:", countSignals(signals10));
+console.log("Period 5 signal counts:", countSignals(signals5));
+console.log("Period 3 signal counts:", countSignals(signals3));
 
 // Returns the percentage of directional signals that were BUY (HOLD excluded).
 // Does not measure profitability — that needs entry vs later exit prices.
@@ -158,9 +158,14 @@ const calculateBuyRatio = (signals) => {
     return (counts.BUY / totalSignals) * 100;
 };
 
-console.log("period 10 Buy Ratio:", calculateBuyRatio(signals10));
-console.log("period 5 Buy Ratio:", calculateBuyRatio(signals5));
-console.log("period 3 Buy Ratio:", calculateBuyRatio(signals3));
+console.log("Period 10 Buy Ratio:", calculateBuyRatio(signals10));
+console.log("Period 5 Buy Ratio:", calculateBuyRatio(signals5));
+console.log("Period 3 Buy Ratio:", calculateBuyRatio(signals3));
+
+// Standalone demonstration of .map()/.filter() mechanics — not part of the
+// strategy pipeline itself. Kept here for reference rather than in the
+// gitignored practice file, since it shows real techniques used elsewhere
+// in this project (see countSignals, backtest).
 
 const ranges = candles.map((candle) => candle.high - candle.low);
 const sellPrices = signals5.filter(s => s.signal === "SELL").map(s => s.currentPrice)
@@ -175,7 +180,10 @@ console.log("Enriched candles:", enriched);
 // Look-ahead bias: letting a backtest use information it couldn't have known
 // at the time of the decision. entryBar + 1 avoids judging a trade using
 // data from the exact candle that generated the signal.
-// Checking Win is an assumption not a fact.
+//
+// NOTE: checking WIN before LOSS each candle is an assumption, not a fact.
+// A candle's high and low could both have crossed their lines within the same
+// period — OHLC data alone can't tell us which happened first.
 
 const checkOutcome = (candles, entryBar, entryPrice, winPercent, lossPercent) => {
     const targetPrice = entryPrice * (1 + winPercent / 100);
@@ -204,8 +212,6 @@ const backtest = (candles, signals, winPercent, lossPercent) => {
 
 };
 
-console.log(backtest(candles, signals5, 5, 2));
-
 const calculateWinRate = (outcomes) => {
     // "6 were wins" — count how many outcomes equal "WIN"
     const winCount = outcomes.filter(o => o === "WIN").length;
@@ -226,14 +232,14 @@ const calculateWinRate = (outcomes) => {
 // This isolates ONE variable — the lookback period — so any difference in
 // win rate is caused by the period itself, not by also changing the target.
 
-const outcomes5 = backtest(candles, signals5, 5, 2);
-console.log("Period 5 win rate:", calculateWinRate(outcomes5));
-
 const outcomes10 = backtest(candles, signals10, 5, 2);
 console.log("Period 10 win rate:", calculateWinRate(outcomes10));
 
+const outcomes5 = backtest(candles, signals5, 5, 2);
+console.log("Period 5 win rate:", calculateWinRate(outcomes5));
+
 const outcomes3 = backtest(candles, signals3, 5, 2);
-console.log("period 3 win rate:", calculateWinRate(outcomes3));
+console.log("Period 3 win rate:", calculateWinRate(outcomes3));
 
 // Final comparison across all three periods, same win/loss targets throughout.
 
