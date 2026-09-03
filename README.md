@@ -13,5 +13,16 @@ from OHLC candle data using a simple moving average crossover.
 node index.js
 ```
 ## Status
-Work in progress — currently uses hardcoded candle data.
-Next: live market data, signal counting, P&L backtesting.
+
+JavaScript version complete — full pipeline from signal generation through
+to backtested win rates across multiple timeframes, cross-verified by hand
+at every step.
+
+Known limitations (documented in code):
+- 12-candle dataset is for demonstrating mechanics, not statistically meaningful
+- checkOutcome assumes WIN is checked before LOSS within a candle — OHLC
+  data can't confirm true intra-candle order
+
+Next: rebuilding in Python with real historical data — the standard
+tooling (pandas/numpy) for this kind of work, and the direction I'm
+aiming toward (quant development).
