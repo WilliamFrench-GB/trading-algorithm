@@ -219,7 +219,14 @@ const calculateWinRate = (outcomes) => {
     return (winCount / totalDecided) * 100;
 };
 
-console.log(calculateWinRate(backtest(candles, signals5, 5, 2)));
+const outcomes5 = backtest(candles, signals5, 5, 2);
+console.log("Period 5 win rate:", calculateWinRate(outcomes5));
+
+const outcomes10 = backtest(candles, signals10, 5, 2);
+console.log("Period 10 win rate:" , calculateWinRate(outcomes10));
+
+const outcomes3 = backtest (candles, signals3, 5, 2);
+console.log("period 3 win rate:", calculateWinRate(outcomes3));
 
 
 
