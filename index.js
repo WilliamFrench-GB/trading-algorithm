@@ -1,3 +1,5 @@
+// The 12 candles are a toy dataSet.
+// Historical data would be needed to draw real conclusions.
 const candles = [
     {
         open: 125,
@@ -173,6 +175,7 @@ console.log("Enriched candles:", enriched);
 // Look-ahead bias: letting a backtest use information it couldn't have known
 // at the time of the decision. entryBar + 1 avoids judging a trade using
 // data from the exact candle that generated the signal.
+// Checking Win is an assumption not a fact.
 
 const checkOutcome = (candles, entryBar, entryPrice, winPercent, lossPercent) => {
     const targetPrice = entryPrice * (1 + winPercent / 100);
@@ -219,15 +222,21 @@ const calculateWinRate = (outcomes) => {
     return (winCount / totalDecided) * 100;
 };
 
+// All three periods tested against identical win/loss targets (5% / 2%).
+// This isolates ONE variable — the lookback period — so any difference in
+// win rate is caused by the period itself, not by also changing the target.
+
 const outcomes5 = backtest(candles, signals5, 5, 2);
 console.log("Period 5 win rate:", calculateWinRate(outcomes5));
 
 const outcomes10 = backtest(candles, signals10, 5, 2);
-console.log("Period 10 win rate:" , calculateWinRate(outcomes10));
+console.log("Period 10 win rate:", calculateWinRate(outcomes10));
 
-const outcomes3 = backtest (candles, signals3, 5, 2);
+const outcomes3 = backtest(candles, signals3, 5, 2);
 console.log("period 3 win rate:", calculateWinRate(outcomes3));
 
+// Final comparison across all three periods, same win/loss targets throughout.
 
-
-
+console.log("Period 10 —", "Signals:", countSignals(signals10), "Buy Ratio:", calculateBuyRatio(signals10), "Win Rate:", calculateWinRate(outcomes10));
+console.log("Period 5 —", "Signals:", countSignals(signals5), "Buy Ratio:", calculateBuyRatio(signals5), "Win Rate:", calculateWinRate(outcomes5));
+console.log("Period 3 —", "Signals:", countSignals(signals3), "Buy Ratio:", calculateBuyRatio(signals3), "Win Rate:", calculateWinRate(outcomes3));
